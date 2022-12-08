@@ -5,8 +5,9 @@ SELECT ROUND(2022 - AVG(YEAR(dataUr))) AS 'srednia wieku', rodzaj FROM kreatura 
 
 SELECT SUM(waga * ilosc), rodzaj FROM zasob GROUP BY rodzaj;
 SELECT AVG(waga), nazwa FROM zasob WHERE ilosc >= 4 GROUP BY nazwa HAVING SUM(waga)>10;     // glupi podpunkt, nieprecyzyjne polecenie
-SELECT COUNT(DISTINCT nazwa), rodzaj, nazwa FROM zasob WHERE ilosc > 1 GROUP BY rodzaj;
+SELECT COUNT(DISTINCT nazwa), rodzaj FROM zasob WHERE ilosc > 1 GROUP BY rodzaj;
 
 SELECT kreatura.nazwa, SUM(ekwipunek.ilosc) FROM kreatura JOIN ekwipunek ON kreatura.idKreatury = ekwipunek.idKreatury GROUP BY nazwa;
 SELECT kreatura.nazwa, GROUP_CONCAT(DISTINCT zasob.nazwa) AS zasoby FROM kreatura JOIN ekwipunek ON kreatura.idKreatury = ekwipunek.idKreatury
 JOIN zasob ON zasob.idZasobu = ekwipunek.idZasobu GROUP BY kreatura.nazwa;
+SELECT kreatura.nazwa FROM kreatura LEFT JOIN ekwipunek ON ekwipunek.idKreatury = kreatura.idKreatury WHERE ekwipunek.idKreatury IS NULL;
