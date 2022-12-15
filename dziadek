@@ -17,3 +17,9 @@ JOIN zasob ON zasob.idZasobu = ekwipunek.idZasobu WHERE kreatura.rodzaj = 'wikin
 // podobne do 3.2
 SELECT DISTINCT kreatura.nazwa FROM kreatura JOIN ekwipunek ON kreatura.idKreatury = ekwipunek.idKreatury
 JOIN zasob ON zasob.idZasobu = ekwipunek.idZasobu WHERE zasob.rodzaj = 'jedzenie' ORDER BY dataUr DESC LIMIT 5;
+SELECT A.nazwa AS kreatura1, B.nazwa AS kreatura2 FROM kreatura A, kreatura B WHERE A.idKreatury <> B.idKreatury AND A.idKreatury + 5 = B.idKreatury;
+
+SELECT kreatura.nazwa, ROUND(AVG(zasob.waga), 2) AS 'srednia waga' FROM kreatura JOIN ekwipunek ON kreatura.idKreatury = ekwipunek.idKreatury
+JOIN zasob ON zasob.idZasobu = ekwipunek.idZasobu WHERE kreatura.rodzaj != 'waz' AND kreatura.rodzaj != 'malpa'
+GROUP BY kreatura.nazwa HAVING SUM(zasob.ilosc) < 30;
+SELECT GROUP_CONCAT(nazwa, ' ', dataUr), rodzaj FROM kreatura GROUP BY rodzaj;      // nwm jesszcze jak zrobic
