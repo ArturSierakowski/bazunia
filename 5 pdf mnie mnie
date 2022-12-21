@@ -5,3 +5,6 @@ CREATE TABLE wyprawa SELECT * FROM wikingowie.wyprawa;
 SELECT nazwa FROM kreatura WHERE NOT EXISTS(SELECT * FROM uczestnicy WHERE kreatura.idKreatury = uczestnicy.id_uczestnika);
 SELECT wyprawa.nazwa, SUM(ekwipunek.ilosc) FROM wyprawa JOIN uczestnicy ON wyprawa.id_wyprawy = uczestnicy.id_wyprawy
 JOIN ekwipunek ON ekwipunek.idKreatury = uczestnicy.id_uczestnika GROUP BY wyprawa.nazwa;
+
+SELECT wyprawa.nazwa, COUNT(kreatura.nazwa), GROUP_CONCAT(kreatura.nazwa) AS uczestnicy FROM wyprawa
+JOIN uczestnicy ON wyprawa.id_wyprawy = uczestnicy.id_wyprawy JOIN kreatura ON uczestnicy.id_uczestnika = kreatura.idKreatury GROUP BY wyprawa.nazwa;
