@@ -1,15 +1,16 @@
-CREATE TABLE uczestnicy SELECT * FROM wikingowie.uczestnicy;
+1. CREATE TABLE uczestnicy SELECT * FROM wikingowie.uczestnicy;
 CREATE TABLE etapy_wyprawy SELECT * FROM wikingowie.etapy_wyprawy;
 CREATE TABLE sektor SELECT * FROM wikingowie.sektor;
 CREATE TABLE wyprawa SELECT * FROM wikingowie.wyprawa;
-SELECT nazwa FROM kreatura WHERE NOT EXISTS(SELECT * FROM uczestnicy WHERE kreatura.idKreatury = uczestnicy.id_uczestnika);
-SELECT wyprawa.nazwa, SUM(ekwipunek.ilosc) FROM wyprawa JOIN uczestnicy ON wyprawa.id_wyprawy = uczestnicy.id_wyprawy
+2. SELECT nazwa FROM kreatura WHERE NOT EXISTS(SELECT * FROM uczestnicy WHERE kreatura.idKreatury = uczestnicy.id_uczestnika);
+3. SELECT wyprawa.nazwa, SUM(ekwipunek.ilosc) FROM wyprawa JOIN uczestnicy ON wyprawa.id_wyprawy = uczestnicy.id_wyprawy
 JOIN ekwipunek ON ekwipunek.idKreatury = uczestnicy.id_uczestnika GROUP BY wyprawa.nazwa;
 
 
-SELECT wyprawa.nazwa, COUNT(kreatura.nazwa), GROUP_CONCAT(kreatura.nazwa) AS uczestnicy FROM wyprawa
+1. SELECT wyprawa.nazwa, COUNT(kreatura.nazwa), GROUP_CONCAT(kreatura.nazwa) AS uczestnicy FROM wyprawa
 JOIN uczestnicy ON wyprawa.id_wyprawy = uczestnicy.id_wyprawy JOIN kreatura ON uczestnicy.id_uczestnika = kreatura.idKreatury GROUP BY wyprawa.nazwa;
-
-SELECT wyprawa.nazwa, GROUP_CONCAT(etapy_wyprawy.idEtapu, sektor.nazwa) FROM wyprawa JOIN etapy_wyprawy ON wyprawa.id_wyprawy = etapy_wyprawy.idWyprawy
+2. SELECT wyprawa.nazwa, GROUP_CONCAT(etapy_wyprawy.idEtapu, ' ', sektor.nazwa) AS 'etapy i sektory' FROM wyprawa JOIN etapy_wyprawy ON wyprawa.id_wyprawy = etapy_wyprawy.idWyprawy
 JOIN sektor ON etapy_wyprawy.sektor = sektor.id_sektora WHERE EXISTS (SELECT kreatura.nazwa FROM kreatura WHERE wyprawa.kierownik = kreatura.idKreatury) GROUP BY wyprawa.nazwa ORDER BY wyprawa.data_rozpoczecia DESC,
-etapy_wyprawy.kolejnosc ASC;      // nie dziala jeszcze
+etapy_wyprawy.kolejnosc ASC;      // nie dziala jeszcze (dodaj kreatura.nazwa + JOIN kreatura ON wyprawa.kierownik = kreatura.idKreatury zamiast podzapytania)
+
+1. 
