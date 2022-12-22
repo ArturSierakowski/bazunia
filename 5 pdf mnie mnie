@@ -6,5 +6,10 @@ SELECT nazwa FROM kreatura WHERE NOT EXISTS(SELECT * FROM uczestnicy WHERE kreat
 SELECT wyprawa.nazwa, SUM(ekwipunek.ilosc) FROM wyprawa JOIN uczestnicy ON wyprawa.id_wyprawy = uczestnicy.id_wyprawy
 JOIN ekwipunek ON ekwipunek.idKreatury = uczestnicy.id_uczestnika GROUP BY wyprawa.nazwa;
 
+
 SELECT wyprawa.nazwa, COUNT(kreatura.nazwa), GROUP_CONCAT(kreatura.nazwa) AS uczestnicy FROM wyprawa
 JOIN uczestnicy ON wyprawa.id_wyprawy = uczestnicy.id_wyprawy JOIN kreatura ON uczestnicy.id_uczestnika = kreatura.idKreatury GROUP BY wyprawa.nazwa;
+
+SELECT wyprawa.nazwa, GROUP_CONCAT(etapy_wyprawy.idEtapu, sektor.nazwa) FROM wyprawa JOIN etapy_wyprawy ON wyprawa.id_wyprawy = etapy_wyprawy.idWyprawy
+JOIN sektor ON etapy_wyprawy.sektor = sektor.id_sektora WHERE EXISTS (SELECT kreatura.nazwa FROM kreatura WHERE wyprawa.kierownik = kreatura.idKreatury) GROUP BY wyprawa.nazwa ORDER BY wyprawa.data_rozpoczecia DESC,
+etapy_wyprawy.kolejnosc ASC;      // nie dziala jeszcze
