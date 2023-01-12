@@ -14,4 +14,7 @@
    GROUP BY wyprawa.nazwa ORDER BY wyprawa.data_rozpoczecia DESC, etapy_wyprawy.kolejnosc ASC;
    // nie dziala jeszcze (dodaj kreatura.nazwa + JOIN kreatura ON wyprawa.kierownik = kreatura.idKreatury zamiast podzapytania)
 
-1. 
+1. SELECT sektor.nazwa, COUNT(etapy_wyprawy.sektor) AS 'liczba odwiedzin' FROM sektor LEFT JOIN etapy_wyprawy ON sektor.id_sektora = etapy_wyprawy.sektor
+   GROUP BY sektor.nazwa;
+2. SELECT kreatura.nazwa, IF(COUNT(id_uczestnika) > 0, 'bral udzial w wyprawie', 'nie bral udzialu w wyprawie') AS ' ' FROM kreatura
+   LEFT JOIN uczestnicy ON kreatura.idKreatury = uczestnicy.id_uczestnika GROUP BY kreatura.nazwa;
