@@ -1,23 +1,23 @@
-CREATE TABLE postac(id_postaci int not null auto_increment PRIMARY KEY, nazwa varchar(40), rodzaj enum('wiking', 'ptak', 'kobieta'), data_ur(date), wiek int unsigned);
+CREATE TABLE postac(id_postaci INT NOT NULL AUTO_INCREMENT PRIMARY KEY, nazwa VARCHAR(40), rodzaj ENUM('wiking', 'ptak', 'kobieta'), data_ur(DATE), wiek INT UNSIGNED);
 INSERT INTO postac VALUES(0, 'Bjorn', 'wiking', '2002-06-29', 20);
 INSERT INTO postac VALUES(0, 'Drozd', 'ptak', '2001-09-11', 21);
 INSERT INTO postac VALUES(0, 'Tesciowa', 'kobieta', '1934-10-27',87);
 UPDATE postac SET wiek=88 WHERE nazwa = 'Tesciowa';
 
-CREATE TABLE walizka(id_walizki int not null auto_increment PRIMARY KEY, pojemnosc int unsigned, kolor enum('rozowy', 'czerwony', 'teczowy', 'zolty'),
-id_wlasciciela int not null, FOREIGN KEY(id_wlasciciela) REFERENCES postac(id_postaci) on delete cascade);
+CREATE TABLE walizka(id_walizki INT NOT NULL AUTO_INCREMENT PRIMARY KEY, pojemnosc INT UNSIGNED, kolor ENUM('rozowy', 'czerwony', 'teczowy', 'zolty'),
+id_wlasciciela INT NOT NULL, FOREIGN KEY(id_wlasciciela) REFERENCES postac(id_postaci) ON DELETE CASCADE);
 ALTER TABLE walizka ALTER COLUMN kolor SET DEFAULT 'rozowy';
 INSERT INTO walizka(id_walizki, pojemnosc, kolor, id_wlasciciela) VALUES(0, 20, teczowy, 1);
 INSERT INTO walizka(id_walizki, pojemnosc, id_wlasciciela) VALUES(0, 10, 3);
 
-CREATE TABLE izba(adres_budynku varchar(40), nazwa_izby varchar(40), metraz int unsigned, wlasciciel int, PRIMARY KEY(adres_budynku, nazwa_izby), FOREIGN KEY(wlasciciel)
+CREATE TABLE izba(adres_budynku VARCHAR(40), nazwa_izby VARCHAR(40), metraz INT UNSIGNED, wlasciciel INT, PRIMARY KEY(adres_budynku, nazwa_izby), FOREIGN KEY(wlasciciel)
 REFERENCES postac(id_postaci) ON DELETE CASCADE);
-ALTER TABLE izba ADD COLUMN kolor_izby varchar(20) AFTER metraz;
+ALTER TABLE izba ADD COLUMN kolor_izby VARCHAR(20) AFTER metraz;
 ALTER TABLE izba ALTER COLUMN kolor_izby SET DEFAULT 'czarny';
 INSERT INTO izba VALUES('Szkolna 17', 'Spizarnia', 20, 'bezowy', 1);
 
-CREATE TABLE przetwory(id_przetworu int not null auto_increment PRIMARY KEY, rok_produkcji int, id_wykonawcy int, FOREIGN KEY(id_wykonawcy)
-REFERENCES postac(id_postaci), zawartosc varchar(40), dodatek varchar(40) DEFAULT 'papryczka_chilli', id_konsumenta int, FOREIGN KEY(id_konsumenta)
+CREATE TABLE przetwory(id_przetworu INT NOT NULL AUTO_INCREMENT PRIMARY KEY, rok_produkcji INT, id_wykonawcy INT, FOREIGN KEY(id_wykonawcy)
+REFERENCES postac(id_postaci), zawartosc VARCHAR(40), dodatek VARCHAR(40) DEFAULT 'papryczka_chilli', id_konsumenta INT, FOREIGN KEY(id_konsumenta)
 REFERENCES postac(id_postaci));
 ALTER TABLE przetwory ALTER COLUMN rok_produkcji SET DEFAULT 1654;
 INSERT INTO przetwory(id_przetworu, id_wykonawcy, zawartosc, id_konsumenta) VALUES (0, 1, 'bigos', 3);
@@ -28,15 +28,14 @@ INSERT INTO postac VALUES(0, 'Bran', 'wiking', '1969-01-29', 53);
 INSERT INTO postac VALUES(0, 'Harald', 'wiking', '1963-12-01', 58);
 INSERT INTO postac VALUES(0, 'Crach', 'wiking', '1987-09-21', 45);
 
-CREATE TABLE statek(nazwa_statku varchar(40) PRIMARY KEY, rodzaj_statku enum('drakkar', 'langskip'), data_wodowania date, max_ladownosc int unsigned);
+CREATE TABLE statek(nazwa_statku VARCHAR(40) PRIMARY KEY, rodzaj_statku ENUM('drakkar', 'langskip'), data_wodowania DATE, max_ladownosc INT UNSIGNED);
 INSERT INTO statek VALUES('Dzik morski', 'drakkar', '1920-03-27', 500);
 INSERT INTO statek VALUES('Terror Wielkiego Morza', 'langskip', '1925-04-11', 300);
-ALTER TABLE postac ADD COLUMN funkcja varchar(40);
-ALTER TABLE postac ALTER COLUMN funkcja SET DEFAULT 'brak';
+ALTER TABLE postac ADD COLUMN funkcja VARCHAR(40) DEFAULT 'brak';
 UPDATE postac SET funkcja = 'kapitan' WHERE id_postaci = 1;
 UPDATE postac SET funkcja = 'zalogant' WHERE id_postaci BETWEEN 4 AND 8;
 UPDATE postac SET funkcja = 'brak' WHERE id_postaci BETWEEN 4 AND 8;
-ALTER TABLE postac ADD COLUMN n_statku varchar(40) AFTER wiek;
+ALTER TABLE postac ADD COLUMN n_statku VARCHAR(40) AFTER wiek;
 ALTER TABLE postac ADD FOREIGN KEY(n_statku) REFERENCES statek(nazwa_statku);
 UPDATE postac SET n_statku = 'Dzik morski' WHERE id_postaci BETWEEN 1 AND 2 OR id_postaci BETWEEN 4 AND 5;
 UPDATE postac SET n_statku = 'Terror Wielkiego Morza' WHERE id_postaci BETWEEN 6 AND 8;
