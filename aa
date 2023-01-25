@@ -1,3 +1,4 @@
+									TWORZENIE TABEL
 CREATE TABLE promotor (PESEL VARCHAR(11) NOT NULL PRIMARY KEY, tytul ENUM('mgr', 'dr', 'prof.') DEFAULT 'prof.', imie VARCHAR(40) NOT NULL,
 nazwisko VARCHAR(40) NOT NULL, zarobki INT UNSIGNED DEFAULT 2000, dataur DATE);
 
@@ -14,6 +15,7 @@ ALTER TABLE praca DROP PRIMARY KEY;
 ALTER TABLE praca ADD COLUMN idPracy INT PRIMARY KEY;
 _______________________________________________________________________________________________________________________________________________________________________
 
+									ZAPYTANIA
 a. SELECT imie, nazwisko FROM zawodnik WHERE klub IS NOT NULL && YEAR(dataUrodzenia) BETWEEN 1990 AND 1999;
 
 b. SELECT miejsce_zawodow.miasto, GROUP_CONCAT(wyniki.idZawodnika, wyniki) FROM wyniki
@@ -49,6 +51,7 @@ f. SELECT zawodnik.imie, zawodnik.nazwisko FROM zawodnik
 g. 
 _______________________________________________________________________________________________________________________________________________________________________
 
+									TABELE DO ZAPYTAN
 CREATE TABLE zawodnik (idZawodnika INT NOT NULL AUTO_INCREMENT PRIMARY KEY, imie VARCHAR(45),
 nazwisko VARCHAR(45), dataUrodzenia VARCHAR(45), idKraju INT, klub VARCHAR(255));
 
@@ -64,3 +67,6 @@ dataKonkurencji DATE, FOREIGN KEY(idMiejsca) REFERENCES miejsce_zawodow(idMiejsc
 CREATE TABLE wyniki (idWyniku INT NOT NULL AUTO_INCREMENT PRIMARY KEY, idZawodnika INT, idKonkurencji INT, wynik TIME,
 FOREIGN KEY(idZawodnika) REFERENCES zawodnik(idZawodnika) ON DELETE SET NULL, FOREIGN KEY(idKonkurencji) REFERENCES konkurencja(idKonkurencji) ON DELETE SET NULL);
 _______________________________________________________________________________________________________________________________________________________________________
+
+									INSERTY
+.
