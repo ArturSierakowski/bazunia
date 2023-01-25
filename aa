@@ -1,4 +1,4 @@
-																		TWORZENIE TABEL
+															TWORZENIE TABEL
 CREATE TABLE promotor (PESEL VARCHAR(11) NOT NULL PRIMARY KEY, tytul ENUM('mgr', 'dr', 'prof.') DEFAULT 'prof.', imie VARCHAR(40) NOT NULL,
 nazwisko VARCHAR(40) NOT NULL, zarobki INT UNSIGNED DEFAULT 2000, dataur DATE);
 
@@ -15,7 +15,7 @@ ALTER TABLE praca DROP PRIMARY KEY;
 ALTER TABLE praca ADD COLUMN idPracy INT PRIMARY KEY;
 _______________________________________________________________________________________________________________________________________________________________________
 
-																		ZAPYTANIA
+															ZAPYTANIA
 TRZEBA UWAŻAĆ Z NATURAL JOINAMI - być może jest to spowodowane tym, że tabela wyniki ma dwa klucze obce 
 
 a. SELECT imie, nazwisko FROM zawodnik WHERE klub IS NOT NULL && YEAR(dataUrodzenia) BETWEEN 1990 AND 1999;
