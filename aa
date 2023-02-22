@@ -20,21 +20,21 @@ TRZEBA UWAŻAĆ Z NATURAL JOINAMI - być może jest to spowodowane tym, że tabe
 
 a. SELECT imie, nazwisko FROM zawodnik WHERE klub IS NOT NULL && YEAR(dataUrodzenia) BETWEEN 1990 AND 1999;
 
-b. SELECT miejsce_zawodow.miasto, GROUP_CONCAT(wyniki.idZawodnika, ' ', wyniki.wynik ORDER BY wyniki.wynik ASC) FROM wyniki
+b.SELECT miejsce_zawodow.miasto, GROUP_CONCAT(wyniki.idZawodnika, ' ', wyniki.wynik ORDER BY wyniki.wynik ASC) FROM wyniki
 	NATURAL JOIN konkurencja NATURAL JOIN miejsce_zawodow JOIN kraj ON miejsce_zawodow.idKraju = kraj.idKraju
 	WHERE konkurencja.nazwaKonkurencji = 'Pywanie dystans 50m' AND kraj.nazwa IN('Czechy', 'Francja', 'Niemcy') GROUP BY miejsce_zawodow.miasto;
 
-c. SELECT miejsce_zawodow.miasto, AVG(wyniki.wynik) FROM miejsce_zawodow
+c.SELECT miejsce_zawodow.miasto, AVG(wyniki.wynik) FROM miejsce_zawodow
 	NATURAL JOIN konkurencja NATURAL JOIN wyniki
 	WHERE konkurencja.nazwaKonkurencji = 'Jazda rowerem dystans 10km' GROUP BY miejsce_zawodow.idMiejsca;
 
-d. SELECT miejsce_zawodow.nazwa, COUNT(zawodnik.idZawodnika), GROUP_CONCAT(zawodnik.imie, ' ', zawodnik.nazwisko) FROM miejsce_zawodow
+d.SELECT miejsce_zawodow.nazwa, COUNT(zawodnik.idZawodnika), GROUP_CONCAT(zawodnik.imie, ' ', zawodnik.nazwisko) FROM miejsce_zawodow
 	JOIN konkurencja ON miejsce_zawodow.idMiejsca = konkurencja.idMiejsca
 	JOIN wyniki ON konkurencja.idKonkurencji = wyniki.idKonkurencji
 	JOIN zawodnik ON wyniki.idZawodnika = zawodnik.idZawodnika
 	GROUP BY miejsce_zawodow.idMiejsca;
 
-e. SELECT zawodnik.imie, zawodnik.nazwisko, SUM(wyniki.wynik) FROM wyniki
+e.SELECT zawodnik.imie, zawodnik.nazwisko, SUM(wyniki.wynik) FROM wyniki
 	JOIN zawodnik ON zawodnik.idZawodnika = wyniki.idZawodnika
 	JOIN konkurencja ON konkurencja.idKonkurencji = wyniki.idKonkurencji
 	JOIN miejsce_zawodow ON miejsce_zawodow.idMiejsca = konkurencja.idMiejsca
@@ -42,13 +42,19 @@ e. SELECT zawodnik.imie, zawodnik.nazwisko, SUM(wyniki.wynik) FROM wyniki
 	WHERE kraj.nazwa = 'Polska' GROUP BY zawodnik.idZawodnika ORDER BY wyniki.wynik LIMIT 1;
 
 
-f. SELECT zawodnik.imie, zawodnik.nazwisko FROM zawodnik
-	JOIN wyniki ON zawodnik.idZawodnika = wyniki.idZawodnika
-	JOIN konkurencja ON wyniki.idKonkurencji = konkurencja.idKonkurencji
-	JOIN miejsce_zawodow ON konkurencja.idMiejsca = miejsce_zawodow.idMiejsca
-	WHERE 
+f.SELECT zawodnik.imie, zawodnik.nazwisko FROM zawodnik
+	WHERE zawodnik.idZawodnika NOT IN (SELECT wyniki.idZawodnik FROM wyniki
+	JOIN konkurencja ON konkurencja.idKonkurencji = wyniki.idKonkurencji
+	ORDER BY konkurencja.dataKonkurencji LIMIT 3);
 
-g. 
+g.SELECT kraj.nazwa, COUNT(zawodnik.idZawodnika) FROM wyniki
+	JOIN zawodnik ON zawodnik.idZawodnika = wyniki.idZawodnika
+	JOIN konkurencja ON konkurencja.idKonkurencji = wyniki.idKonkurencji
+	JOIN miejsce_zawodow ON miejsce_zawodow.idMiejsca = konkurencja.idMiejsca
+	JOIN kraj ON kraj.idKraju = miejsce_zawodow.idKraju
+	WHERE (SELECT COUNT(wyniki.idWyniku) FROM wyniki
+	NATURAL JOIN zawodnik GROUP BY zawodnik.idZawodnika) >= 3
+	GROUP BY kraj.nazwa;
 _______________________________________________________________________________________________________________________________________________________________________
 
 									TABELE DO ZAPYTAN
@@ -69,4 +75,73 @@ FOREIGN KEY(idZawodnika) REFERENCES zawodnik(idZawodnika) ON DELETE SET NULL, FO
 _______________________________________________________________________________________________________________________________________________________________________
 
 									INSERTY
-.
+INSERT INTO kraj (nazwa) VALUES ('Polska');
+INSERT INTO kraj (nazwa) VALUES ('Czechy');
+INSERT INTO kraj (nazwa) VALUES ('Francja');
+INSERT INTO kraj (nazwa) VALUES ('Niemcy');
+
+INSERT INTO miejsce_zawodow (nazwa, miasto, idKraju) VALUES ('Stadion Narodowy', 'Warszawa', 1);
+INSERT INTO miejsce_zawodow (nazwa, miasto, idKraju) VALUES ('Stadion miejski', 'Kraków', 1);
+INSERT INTO miejsce_zawodow (nazwa, miasto, idKraju) VALUES ('Eden Arena', 'Praga', 2);
+INSERT INTO miejsce_zawodow (nazwa, miasto, idKraju) VALUES ('Letná Stadium', 'Brno', 2);
+INSERT INTO miejsce_zawodow (nazwa, miasto, idKraju) VALUES ('Stade de France', 'Saint-Denis', 3);
+INSERT INTO miejsce_zawodow (nazwa, miasto, idKraju) VALUES ('Parc des Princes', 'Paryż', 3);
+INSERT INTO miejsce_zawodow (nazwa, miasto, idKraju) VALUES ('Allianz Arena', 'Monachium', 4);
+INSERT INTO miejsce_zawodow (nazwa, miasto, idKraju) VALUES ('Olympiastadion', 'Berlin', 4);
+
+INSERT INTO konkurencja VALUES (0, 'Pływanie dystans 50m', 'sekundy', 1, '2022-06-15');
+INSERT INTO konkurencja VALUES (0, 'Pływanie dystans 50m', 'sekundy', 2, '2022-06-18');
+INSERT INTO konkurencja VALUES (0, 'Pływanie dystans 50m', 'sekundy', 3, '2022-06-17');
+INSERT INTO konkurencja VALUES (0, 'Pływanie dystans 50m', 'sekundy', 4, '2022-06-16');
+INSERT INTO konkurencja VALUES (0, 'Pływanie dystans 50m', 'sekundy', 5, '2022-06-20');
+INSERT INTO konkurencja VALUES (0, 'Pływanie dystans 50m', 'sekundy', 6, '2022-06-19');
+INSERT INTO konkurencja VALUES (0, 'Pływanie dystans 50m', 'sekundy', 7, '2022-06-22');
+INSERT INTO konkurencja VALUES (0, 'Pływanie dystans 50m', 'sekundy', 8, '2022-06-21');
+INSERT INTO konkurencja VALUES (0, 'Jazda rowerem dystans 10km', 'minuty', 1, '2022-06-16');
+INSERT INTO konkurencja VALUES (0, 'Jazda rowerem dystans 10km', 'minuty', 2, '2022-06-19');
+INSERT INTO konkurencja VALUES (0, 'Jazda rowerem dystans 10km', 'minuty', 3, '2022-06-18');
+INSERT INTO konkurencja VALUES (0, 'Jazda rowerem dystans 10km', 'minuty', 4, '2022-06-17');
+INSERT INTO konkurencja VALUES (0, 'Jazda rowerem dystans 10km', 'minuty', 5, '2022-06-21');
+INSERT INTO konkurencja VALUES (0, 'Jazda rowerem dystans 10km', 'minuty', 6, '2022-06-20');
+INSERT INTO konkurencja VALUES (0, 'Jazda rowerem dystans 10km', 'minuty', 7, '2022-06-23');
+INSERT INTO konkurencja VALUES (0, 'Jazda rowerem dystans 10km', 'minuty', 8, '2022-06-22');
+
+INSERT INTO zawodnik VALUES (0, 'Jan', 'Kowalski', '1995-01-01', 1, 'UKS Sportowy');
+INSERT INTO zawodnik VALUES (0, 'Ewa', 'Mazur', '1997-01-01', 1, 'UKS Sportowy');
+INSERT INTO zawodnik VALUES (0, 'Andrzej', 'Nowak', '1999-01-01', 1, NULL);
+INSERT INTO zawodnik VALUES (0, 'Jakub', 'Cerny', '1995-01-01', 2, 'UKS Sportowy');
+INSERT INTO zawodnik VALUES (0, 'Marta', 'Novakova', '1997-01-01', 2, 'UKS Sportowy');
+INSERT INTO zawodnik VALUES (0, 'Tomas', 'Svoboda', '1999-01-01', 2, NULL);
+INSERT INTO zawodnik VALUES (0, 'Marie', 'Dupont', '1995-01-01', 3, 'UKS Sportowy');
+INSERT INTO zawodnik VALUES (0, 'Luc', 'Durand', '1997-01-01', 3, 'UKS Sportowy');
+INSERT INTO zawodnik VALUES (0, 'Jolie', 'Longpre', '1995-01-01', 3, 'UKS Sportowy');
+INSERT INTO zawodnik VALUES (0, 'Klaudia', 'Linn', '1995-01-01', 4, 'UKS Sportowy');
+INSERT INTO zawodnik VALUES (0, 'Janik', 'Eckstein', '1997-01-01', 4, NULL);
+INSERT INTO zawodnik VALUES (0, 'Hans', 'Landa', '1995-01-01', 4, NULL);
+
+INSERT INTO wyniki VALUES (0, 1, 1, '00:00:30');
+INSERT INTO wyniki VALUES (0, 1, 5, '00:00:29');
+INSERT INTO wyniki VALUES (0, 1, 6, '00:00:27');
+INSERT INTO wyniki VALUES (0, 1, 7, '00:00:28');
+
+INSERT INTO wyniki VALUES (0, 2, 1, '00:00:30');
+INSERT INTO wyniki VALUES (0, 2, 2, '00:00:31');
+INSERT INTO wyniki VALUES (0, 2, 3, '00:00:26');
+
+INSERT INTO wyniki VALUES (0, 3, 1, '00:00:27');
+INSERT INTO wyniki VALUES (0, 3, 8, '00:00:28');
+
+INSERT INTO wyniki VALUES (0, 4, 1, '00:00:30');
+INSERT INTO wyniki VALUES (0, 4, 2, '00:00:31');
+INSERT INTO wyniki VALUES (0, 4, 3, '00:00:32');
+INSERT INTO wyniki VALUES (0, 4, 4, '00:00:28');
+INSERT INTO wyniki VALUES (0, 4, 6, '00:00:27');
+
+INSERT INTO wyniki VALUES (0, 5, 1, '00:00:30');
+INSERT INTO wyniki VALUES (0, 5, 2, '00:00:30');
+INSERT INTO wyniki VALUES (0, 5, 3, '00:00:30');
+INSERT INTO wyniki VALUES (0, 5, 4, '00:00:30');
+
+INSERT INTO wyniki VALUES (0, 6, 1, '00:00:30');
+INSERT INTO wyniki VALUES (0, 6, 7, '00:00:30');
+INSERT INTO wyniki VALUES (0, 6, 8, '00:00:30');
